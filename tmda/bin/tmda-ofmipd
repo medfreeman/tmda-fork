@@ -1275,7 +1275,17 @@ def process_message_sysuser(peer, mailfrom, rcpttos, data, auth_username):
         tmda_configdir = os.path.join(os.path.expanduser
                                       ('~' + auth_username), '.tmda')
     else:
-        tmda_configdir = os.path.join(os.path.expanduser
+        if opts.domainconfig:
+            userinfo = auth_username.split('@')
+            user = userinfo[0]
+            if len(userinfo) > 1:
+                domain = userinfo[1]
+            else:
+                domain = ''
+            tmda_configdir = os.path.join(os.path.expanduser
+                                      (opts.configdir), domain, user)
+        else:
+            tmda_configdir = os.path.join(os.path.expanduser
                                       (opts.configdir), auth_username)
     tmda_configfile = os.path.join(tmda_configdir, 'config')
     if opts.pure_proxy and not os.path.exists(tmda_configfile):
@@ -1418,6 +1428,15 @@ TMDA files outside the user's home directory.
 /var/tmda' will have tmda-ofmipd search for `/var/tmda/bobby/config'.
 If this option is not used, `~user/.tmda/config' will be assumed, but
 see the --vhome-script option for qmail virtual domain users.""")
+
+gengroup.add_option("-D", "--domainconfig",
+                    action="store_true", default=False, dest="domainconfig",
+                    help= \
+"""Complements above --configir option. If set, 'domain/username/config' will be
+appended to form the path instead of 'username/config'; e.g, `-c
+/var/tmda -D' will have tmda-ofmipd search for 
+`/var/tmda/mydomain.com/bobby/config'.
+""")
 
 # connection
 congroup = OptionGroup(parser, "Connection")
@@ -1622,6 +1641,8 @@ def handle_opts():
         sys.exit()
     if opts.vhomescript and opts.configdir:
         parser.error("options '--vhome-script' and '--configdir' are incompatible!")
+    if opts.domainconfig and not(opts.configdir):
+        parser.error("option '--domainconfig' can't be used without '--configdir'!")
     if opts.log:
         logger.setLevel(logging.INFO)
     if opts.debug:
