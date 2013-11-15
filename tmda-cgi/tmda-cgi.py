@@ -72,6 +72,10 @@ Session.WebUID = os.getuid()
 if os.environ["TMDARC"] == "None":
   del os.environ["TMDARC"]
 
+# Clear out false TMDA_DOMAIN_CONFIG
+if os.environ["TMDA_DOMAIN_CONFIG"] == "False":
+  del os.environ["TMDA_DOMAIN_CONFIG"]
+
 # Make some global stuff available to all
 Template.Template.Dict["Script"]   = os.environ["SCRIPT_NAME"]
 Template.Template.Dict["SID"]      = ""

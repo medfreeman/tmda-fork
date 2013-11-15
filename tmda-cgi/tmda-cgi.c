@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 {
   int fd;
   putenv("TMDARC=" TMDARC);
+  putenv("TMDA_DOMAIN_CONFIG=" TMDA_DOMAIN_CONFIG);
 #ifdef AUTH_ARG
   putenv("TMDA_AUTH_TYPE=" AUTH_TYPE);
   putenv("TMDA_AUTH_ARG=" AUTH_ARG);

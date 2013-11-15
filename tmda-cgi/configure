@@ -59,6 +59,7 @@ class ConfigItems(object):
         self.cleanup_odds       = '0.01'
         self.compiler           = 'cc'
         self.config_file        = os.environ.get('TMDARC', 'None')
+	self.domain_config	= 'False'
         if os.geteuid() == 0:
             self.mode           = 'system-wide'
         else:
@@ -98,6 +99,7 @@ class ConfigItems(object):
         config.add_section(section)
 
         config.set(section, 'TMDARC', self.config_file)
+	config.set(section, 'TMDA_DOMAIN_CONFIG', self.domain_config)
         config.set(section, 'TMDA_CGI_MODE', self.mode)
         config.set(section, 'TMDA_CGI_DISP_DIR', self.display_dir)
         config.set(section, 'TMDA_BASE_DIR', self.tmda_path)
@@ -170,6 +172,10 @@ class InteractiveConfig(object):
         self.ask('Where are user TMDA configuration files located? ~ can be used as\n'
                  'a placeholder for the user\'s home directory. Use "None" to use\n'
                  'the default location.', 'config_file')
+        self.ask('Do you want to replace "~" by "domain/user"\n'
+                 'instead of "username" in above config path ?\n'
+                 'May be True or False',
+                 'domain_config', self.choice_validator(['False', 'True']))
         self.ask('How will users be authenticated? May be file, program, remote,\n'
                  'or default.', 'auth_type',
                  self.choice_validator(['file', 'program', 'remote',
@@ -354,6 +360,7 @@ def make_header_file(name, config):
         print >> f, '#define SESS_EXP  "%s"' % config.session_expire
         print >> f, '#define SESS_ODDS "%s"' % config.cleanup_odds
         print >> f, '#define TMDARC    "%s"' % config.config_file
+        print >> f, '#define TMDA_DOMAIN_CONFIG    "%s"' % config.domain_config
         if config.virtual_lookup != 'None':
             print >> f, '#define VUSER     "%s"' % config.virtual_user
             print >> f, '#define VLOOKUP   "%s"' % config.virtual_lookup

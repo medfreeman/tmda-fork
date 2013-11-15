@@ -139,7 +139,16 @@ of this error, or try confirming your message using an alternate method.""")
   # Is there a TMDARC variable?
   if os.environ.has_key("TMDARC"):
     # Yes, replace it
-    os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/", "/%s/" % User)
+    if os.environ.has_key("TMDA_DOMAIN_CONFIG"):
+      userinfo = User.split('@', 1)
+      user = userinfo[0]
+      if len(userinfo) > 1:
+          domain = userinfo[1]
+      else:
+          domain = '' 
+      os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/", "/%s/%s/" % (domain, user))
+    else:
+      os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/", "/%s/" % User)
 
   # Try to change users
   try:

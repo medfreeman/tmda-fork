@@ -344,8 +344,16 @@ rights.""")
         # Is there a TMDARC variable?
         if os.environ.has_key("TMDARC"):
           # Yes, replace it
-          os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/",
-            "/%s/" % self.Vars["User"])
+          if os.environ.has_key("TMDA_DOMAIN_CONFIG"):
+            userinfo = self.Vars["User"].split('@', 1)
+            user = userinfo[0]
+            if len(userinfo) > 1:
+              domain = userinfo[1]
+            else:
+              domain = ''
+            os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/", "/%s/%s/" % (domain, user))
+          else:
+            os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/", "/%s/" % self.Vars["User"])
 
         # Load system defaults
         self.LoadSysDefaults()
@@ -421,8 +429,16 @@ rights.""")
     # Is there a TMDARC variable?
     if os.environ.has_key("TMDARC"):
       # Yes, replace it
-      os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/",
-        "/%s/" % self.Vars["User"])
+      if os.environ.has_key("TMDA_DOMAIN_CONFIG"):
+        userinfo = self.Vars["User"].split('@', 1)
+        user = userinfo[0]
+        if len(userinfo) > 1:
+          domain = userinfo[1]
+        else:
+          domain = ''
+        os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/", "/%s/%s/" % (domain, user))
+      else:
+        os.environ["TMDARC"] = os.environ["TMDARC"].replace("/~/", "/%s/" % self.Vars["User"])    
 
     # Initialize the auth mechanism
     import Authenticate
