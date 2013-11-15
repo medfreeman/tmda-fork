@@ -33,6 +33,7 @@ import time
 import Defaults
 import Errors
 import Util
+import LMTP
 
 
 def alarm_handler(signum, frame):
@@ -105,6 +106,10 @@ class Deliver:
             self.delivery_dest = self.option
             if firstchar == '~':
                 self.delivery_dest = os.path.expanduser(self.delivery_dest)
+        # A lmtp line begins with =
+        elif (firstchar == '='):
+            self.delivery_type = 'lmtp'
+            self.delivery_dest = self.option[1:].strip()
         elif self.option == '_filter_':
             self.delivery_type = 'filter'
             self.delivery_dest = 'stdout'
@@ -162,6 +167,8 @@ class Deliver:
             else:
                 # don't wrap headers, don't escape From, don't add From_ line
                 self.__deliver_maildir(Util.msg_as_string(self.msg), dest)
+        elif type == 'lmtp':
+                self.__deliver_lmtp(Util.msg_as_string(self.msg), dest)
         elif type == 'filter':
             sys.stdout.write(Util.msg_as_string(self.msg))
 
@@ -390,3 +397,9 @@ class Deliver:
         # Delivery is done, cancel the alarm.
         signal.alarm(0)
         signal.signal(signal.SIGALRM, signal.SIG_DFL)
+
+    def __deliver_lmtp(self, message, lmtp_host):
+        LMTP.sendlmtp(lmtp_host, self.env_sender,os.environ.get('TMDA_RECIPIENT'), message);
+
+
+ 
