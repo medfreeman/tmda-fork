@@ -59,7 +59,7 @@ class ConfigItems(object):
         self.cleanup_odds       = '0.01'
         self.compiler           = 'cc'
         self.config_file        = os.environ.get('TMDARC', 'None')
-	self.domain_config	= 'False'
+        self.domain_config	= 'False'
         if os.geteuid() == 0:
             self.mode           = 'system-wide'
         else:
@@ -99,7 +99,7 @@ class ConfigItems(object):
         config.add_section(section)
 
         config.set(section, 'TMDARC', self.config_file)
-	config.set(section, 'TMDA_DOMAIN_CONFIG', self.domain_config)
+        config.set(section, 'TMDA_DOMAIN_CONFIG', self.domain_config)
         config.set(section, 'TMDA_CGI_MODE', self.mode)
         config.set(section, 'TMDA_CGI_DISP_DIR', self.display_dir)
         config.set(section, 'TMDA_BASE_DIR', self.tmda_path)
