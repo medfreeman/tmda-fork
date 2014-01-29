@@ -1,33 +1,3 @@
-# Installation anomalies describes any special instructions to follow when
-# installing files from the skel/install directory.
-
-# PERMISSIONS is a dictionary of filenames and what octal permissions should be
-# assigned to them.
-PERMISSIONS = {".tmda/crypt_key": 0600}
-
-# VIRT_TEST is a regular expression test which can be applied to a user's HOME
-# directory.  If the test matches, then the user is assumed to be a virtual
-# user.
-VIRTUAL_TEST = "^" + VPop
-
-# REAL_ONLY is a list of files or a dictionary of lists of files which should
-# only be copied if the user logging in is "real" (i.e. VIRTUAL_TEST did not
-# match the user's HOME directory).
-# The optional dictionary structure of this configuration variable allows you
-# to specify different files based on the mail program you're using.  You can
-# only have one mail program installed, of course, so if you are creating this
-# skel directory by hand, feel free to simply use a list.
-REAL_ONLY = {"qmail": [".qmail", ".qmail-default"], "sendmail": [".procmail"]}
-
-# VIRTUAL_ONLY is the compliment to REAL_ONLY, above.  These files should only
-# be copied if the user logging in is a virtual user (i.e. VIRTUAL_TEST matched
-# the user's HOME directory).
-VIRTUAL_ONLY = \
-  {"qmail":
-    ["%(Parent)s/.qmail-%(qUser)s", "%(Parent)s/.qmail-%(qUser)s-default"]
-  }
-
-# PARENT_RE is a regular expression used to verify that we have a valid parent
-# directory.  If invalid, try ascending again until we run out of directories
-# or match.
-PARENT_RE = "^" + VPop + "/domains/[^/]+\.[^/]+$"
+DOMAIN_DIR = VPop + "/users/" + Domain
+USER_DIR = DOMAIN_DIR + "/" + User
+PERMISSIONS = {  DOMAIN_DIR: 0755, USER_DIR: 0755, USER_DIR + "/config": 0644, USER_DIR + "/crypt_key": 0640, USER_DIR + "/filters": 0750, USER_DIR + "/filters/incoming": 0640, USER_DIR + "/filters/outgoing": 0640, USER_DIR + "/lists": 0750, USER_DIR + "/lists/blacklist": 0660, USER_DIR + "/lists/confirmed": 0660, USER_DIR + "/lists/whitelist": 0660, USER_DIR + "/pending": 04770, USER_DIR + "/pending/readme": 0600, USER_DIR + "/responses": 04770, USER_DIR + "/responses/readme": 0600, USER_DIR + "/templates": 0750, USER_DIR + "/templates/bounce_expired_dated.txt": 0640, USER_DIR + "/templates/bounce_fail_dated.txt": 0640, USER_DIR + "/templates/bounce_fail_keyword.txt": 0640, USER_DIR + "/templates/bounce_fail_sender.txt": 0640, USER_DIR + "/templates/bounce_incoming.txt": 0640, USER_DIR + "/templates/bounce_invalid_confirmation.txt": 0640, USER_DIR + "/templates/bounce_missing_pending.txt": 0640, USER_DIR + "/templates/confirm_accept.txt": 0640, USER_DIR + "/templates/confirm_request.txt": 0640, USER_DIR + "/tmda-cgi.ini": 0600 }

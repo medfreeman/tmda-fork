@@ -66,7 +66,7 @@ def FindFiles(Path, AbsPath):
       AbsFilePath = os.path.join(AbsPath, File)
       L = len(RetVal)
       if os.path.isdir(AbsFilePath):
-        RetVal[L:L] = FindFiles(FilePath, AbsFilePath)
+        RetVal[L:L] = FindFiles(FilePath, AbsFilePath) 
       else:
         RetVal[L:L] = [FilePath]
   return RetVal
@@ -390,7 +390,7 @@ def Install():
 
   # Prepare template
   T = Template.Template("installed.html", PVars = PVars)
-  T["EMail"] = "%s@%s" % (Defaults["USERNAME"], Defaults["HOSTNAME"])
+  T["EMail"] = "%s@%s" % (Defaults["USERNAME"], Dict["Domain"])
   Row = T["Row"]
   if len(FilesClobbered):
     # List files clobbered
@@ -492,7 +492,7 @@ def Uninstall():
   # Prepare template
   from TMDA import Defaults
   T = Template.Template("uninstalled.html", PVars = PVars)
-  T["EMail"] = "%s@%s" % (Defaults.USERNAME, Defaults.HOSTNAME)
+  T["EMail"] = "%s@%s" % (Defaults.USERNAME, Dict["Domain"])
   T["Archive"] = PVars[("NoOverride", "UninstallBackupTGZ")]
   Row    = T["Row"]
   AddRow = T["AddRow"]
@@ -653,6 +653,12 @@ def Show():
   Dict["qUser"] = re.sub("\.", ":", Dict["User"])
   Match = re.search("^/(?:[^\./]+/)+([^\./]+\.[^/]+)(?:/[^/]+)+/?$", Dict["Home"])
   if Match: Dict["Domain"] = Match.group(1)
+
+  if os.environ["TMDA_DOMAIN_CONFIG"] == "True":
+    if os.environ.has_key( "LOGIN" ): 
+      Match = re.search("(.+)@(.+)", os.environ["LOGIN"])
+      if Match:
+        Dict["Domain"] = Match.group(2)
 
   # Load the display template
   if Form["cmd"].value == "conf-example":
